@@ -58,7 +58,6 @@ type property struct {
 	Required             []string             `json:"required,omitempty"`
 	AdditionalProperties bool                 `json:"additionalProperties,omitempty"`
 	Description          string               `json:"description,omitempty"`
-	AnyOf                []*property          `json:"anyOf,omitempty"`
 
 	// validation keywords:
 	// For any number-valued fields, we're making them pointers, because
@@ -104,11 +103,7 @@ func (p *property) read(t reflect.Type) {
 
 	// say we have *int
 	if kind == reflect.Ptr && isPrimitive(t.Elem().Kind()) {
-		p.AnyOf = []*property{
-			{Type: p.Type},
-			{Type: []string{"null"}},
-		}
-		p.Type = []string{"null"}
+		p.Type = []string{t.Elem().Kind().String(), "null"}
 	}
 }
 
